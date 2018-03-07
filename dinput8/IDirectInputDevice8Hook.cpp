@@ -20,6 +20,14 @@ static GUID GUID_GamepadNVidiaShieldGameStream = {
 	0xECBB3D3D, 0xC2EA, 0x4861,{ 0x98, 0x3F, 0xB3, 0xE1, 0x5B, 0xDC, 0x6C, 0x52 }
 };
 
+static GUID GUID_GamepadGPDWin21 = {
+	0x18d40079, 0x0000, 0x0000,{ 0x00, 0x00, 0x50, 0x49, 0x44, 0x56, 0x49, 0x44 }
+};
+
+static GUID GUID_GamepadGPDWin22 = {
+	0x99ac8150, 0x2097, 0x11e8,{ 0x80, 0x06, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 }
+};
+
 // TODO Add your own known gamepad GUIDs here!
 
 IDirectInputDevice8Hook::IDirectInputDevice8Hook(IDirectInput8 * dinput, IDirectInputDevice8 * dinputdevice, REFGUID guid)
@@ -166,7 +174,7 @@ HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceState(DWORD p0, LPVO
 		}
 
 		// Fix Xbox360 / XBoxOne controls (Steam In-Home Streaming and NVidia GameStream both simulate different versions of this controller!)
-		else if (IsEqualGUID(m_GUID, GUID_GamepadXbox360WirelessSteam) || IsEqualGUID(m_GUID, GUID_GamepadNVidiaShieldGameStream) ||IsEqualGUID(m_GUID, GUID_GamepadXboxOneWired))
+		else if (IsEqualGUID(m_GUID, GUID_GamepadXbox360WirelessSteam) || IsEqualGUID(m_GUID, GUID_GamepadNVidiaShieldGameStream) || IsEqualGUID(m_GUID, GUID_GamepadXboxOneWired) || IsEqualGUID(m_GUID, GUID_GamepadGPDWin21) || IsEqualGUID(m_GUID, GUID_GamepadGPDWin22))
 		{
 			// Swap A and X button presses to match the expected button number
 			state->rgbButtons[0] = state->rgbButtons[0] ^ state->rgbButtons[2];
@@ -185,10 +193,10 @@ HRESULT STDMETHODCALLTYPE IDirectInputDevice8Hook::GetDeviceState(DWORD p0, LPVO
 			state->rgbButtons[11] = state->rgbButtons[7];
 
 			// Translate L2 trigger presses
-			state->rgbButtons[6] = state->lZ >= 0 && state->lZ <= 126 ? 128 : 0;
+			state->rgbButtons[6] = state->lZ >= 1 && state->lZ <= 127 ? 128 : 0;
 
 			// Translate R2 trigger presses
-			state->rgbButtons[7] = state->lZ >= -128 && state->lZ <= -2 ? 128 : 0;
+			state->rgbButtons[7] = state->lZ >= -127 && state->lZ <= -1 ? 128 : 0;
 
 			// Translate horizontal axis of the right analog stick
 			state->lZ = state->lRx;
